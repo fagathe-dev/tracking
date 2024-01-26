@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+{{ title is defined ? title  ~ ' - ' : ''  }}Administration Xtrak
+{% endblock %}
+
+{% block body %}
+    <div id="admin-wrapper">
+        {% include "components/navbar.html.twig" %}
+        <div class="container-fluid container-xxl">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    {% block css %}{% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+    <link rel="stylesheet" href="{{ asset('js/admin.js') }}">
+    {% block js %}{% endblock %}
+{% endblock %}
