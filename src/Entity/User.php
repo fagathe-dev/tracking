@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -58,6 +60,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserRequest::class)]
+    private Collection $userRequests;
+
+    public function __construct()
+    {
+        $this->userRequests = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -161,6 +171,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserRequest>
+     */
+    public function getUserRequests(): Collection
+    {
+        return $this->userRequests;
+    }
+
+    public function addUserRequest(UserRequest $userRequest): static
+    {
+        if (!$this->userRequests->contains($userRequest)) {
+            $this->userRequests->add($userRequest);
+            $userRequest->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserRequest(UserRequest $userRequest): static
+    {
+        if ($this->userRequests->removeElement($userRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($userRequest->getUser() === $this) {
+                $userRequest->setUser(null);
+            }
+        }
 
         return $this;
     }
