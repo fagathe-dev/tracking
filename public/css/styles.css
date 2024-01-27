@@ -1,5 +1,9 @@
 .form-group {
-  margin-block-end: 10px;
+  margin-block-end: calc(1.05vh * 1.5);
+}
+
+.text-indigo {
+  color: var(--bs-indigo);
 }
 
 .navbar {
