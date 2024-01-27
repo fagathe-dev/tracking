@@ -1,0 +1,26 @@
+.form-group {
+  margin-block-end: 10px;
+}
+
+.navbar {
+  width: 100%;
+  box-shadow: 2px -2px 20px 1px rgba(0, 0, 0, .15);
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden auto;
+}
+
+#main-content {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  min-height: calc(100vh - 60px);
+}
