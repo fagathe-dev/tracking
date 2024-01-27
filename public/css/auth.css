@@ -8,6 +8,16 @@
   height: auto;
   max-height: calc(100vh - 180px);
   width: 100%;
-  max-width: 750px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 0.25rem;
+  padding: 20px calc(3vw + 5px) 25px;
 }
+
+@media screen and (min-width: 600px) and (min-height: 600px) {
+  .auth-container {
+    max-width: 750px;
+    overflow: hidden auto;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+}
+
+
