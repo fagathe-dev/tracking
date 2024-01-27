@@ -1,0 +1,13 @@
+#main-content {
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-container {
+  min-height: 100px;
+  height: auto;
+  max-height: calc(100vh - 180px);
+  width: 100%;
+  max-width: 750px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
