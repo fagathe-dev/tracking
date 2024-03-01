@@ -39,16 +39,21 @@ class AppLoginFormAuthenticator extends AbstractLoginFormAuthenticator
     {
         $username = $request->request->get('username', '');
         $password = $request->request->get('password', '');
+        $rememberMe = $request->request->get('_remember_me', '');
+        $csrfToken = $request->request->get('_csrf_token', '');
 
+        $badges = [new CsrfTokenBadge('authenticate', $csrfToken)];
+        
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $username);
+
+        if ($rememberMe && $rememberMe === "on") {
+            $badges = [...$badges, (new RememberMeBadge)->enable()];
+        }
 
         return new Passport(
             new UserBadge($username, fn (string $identifier) => $this->userRepository->findUserByEmailOrUsername($identifier)),
             new PasswordCredentials($password),
-            [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-                new RememberMeBadge(),
-            ]
+            $badges
         );
     }
 

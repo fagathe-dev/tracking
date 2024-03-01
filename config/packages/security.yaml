@@ -21,7 +21,7 @@ security:
                 path: app_logout
 
             remember_me:
-                secret: '%kernel.secret%'
+                secret: '%env(APP_SECRET)%'
                 lifetime: 604800
                 path: /
                 always_remember_me: true
