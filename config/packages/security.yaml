@@ -19,11 +19,9 @@ security:
             custom_authenticator: App\Security\AppLoginFormAuthenticator
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
 
             remember_me:
-                secret: '%kernel.secret%'
+                secret: '%env(APP_SECRET)%'
                 lifetime: 604800
                 path: /
                 always_remember_me: true
@@ -37,8 +35,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
     security:
