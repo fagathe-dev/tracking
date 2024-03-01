@@ -1,0 +1,38 @@
+.wrapper {
+  background-image: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.4) 33.33%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.75) 100%
+    ),
+    url("/images/auth/bg.jpg");
+  background-attachment: fixed;
+  background-position: right;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-clip: content-box;
+  background-origin: content-box;
+}
+
+#main-content {
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-container {
+  min-height: 100px;
+  height: auto;
+  max-height: calc(100vh - 180px);
+  width: 100%;
+  border-radius: 0.25rem;
+  padding: 20px calc(3vw + 5px) 25px;
+  background-color: var(--bs-white);
+}
+
+@media screen and (min-width: 600px) and (min-height: 600px) {
+  .auth-container {
+    max-width: 750px;
+    overflow: hidden auto;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+}

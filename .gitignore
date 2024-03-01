@@ -9,6 +9,7 @@
 /vendor/
 /.env
 /.env.test
+/migrations/*
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
