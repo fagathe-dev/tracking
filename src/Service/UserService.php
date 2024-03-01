@@ -102,8 +102,7 @@ final class UserService
             return false;
         }
     }
-
-
+    
     /**
      * get logged User
      *

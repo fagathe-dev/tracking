@@ -2,8 +2,10 @@
 
 namespace App\Utils;
 
+use App\Entity\User;
 use stdClass;
 use DateTimeImmutable;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -13,6 +15,9 @@ use Symfony\Component\Validator\ConstraintViolationList;
  */
 trait ServiceTrait
 {
+
+    public function __construct(private Security $security) {}
+
     /**
      * @param string $string
      * @param string $charset='utf-8'
@@ -172,7 +177,7 @@ trait ServiceTrait
      * @param  mixed $type
      * @return void
      */
-    public function addFlash(?string $message = '', ?string $type = 'info'): void
+    public function addFlash(mixed $message = '', string $type = 'info'): void
     {
         $session = new Session;
         $session->getFlashBag()->add($type, $message);
