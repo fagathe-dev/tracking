@@ -8,6 +8,7 @@
     <div id="admin-wrapper">
         {% include "components/navbar.html.twig" %}
         <div class="container-fluid container-xl">
+            {% include "widgets/flashes.html.twig" %}
             {% block content %}{% endblock %}
         </div>
     </div>
