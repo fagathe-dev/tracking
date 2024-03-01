@@ -20,7 +20,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = $this->getFakerFactory();
-        for ($i=0; $i < random_int(75, 200); $i++) { 
+        for ($i=0; $i < 5; $i++) { 
             $user = new User();
             
             $user->setEmail($faker->email)

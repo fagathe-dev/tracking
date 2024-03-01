@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,19 +24,27 @@ class AppLoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
     public const TARGET_PATH = 'app_default';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private UserRepository $userRepository,
+    ) {
+    }
+
+    public function supports(Request $request): bool
     {
+        return $request->getMethod() === 'POST' && $request->getPathInfo() === $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 
     public function authenticate(Request $request): Passport
     {
         $username = $request->request->get('username', '');
+        $password = $request->request->get('password', '');
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         return new Passport(
-            new UserBadge($username),
-            new PasswordCredentials($request->request->get('password', '')),
+            new UserBadge($username, fn (string $identifier) => $this->userRepository->findUserByEmailOrUsername($identifier)),
+            new PasswordCredentials($password),
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
                 new RememberMeBadge(),
