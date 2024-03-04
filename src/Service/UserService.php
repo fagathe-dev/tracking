@@ -5,12 +5,18 @@ namespace App\Service;
 use App\Entity\User;
 use App\Helpers\DateTimeHelperTrait;
 use App\Repository\UserRepository;
+use App\Service\Breadcrumb\Breadcrumb;
+use App\Service\Breadcrumb\BreadcrumbItem;
 use App\Utils\ServiceTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Exception;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class UserService
 {
@@ -20,12 +26,61 @@ final class UserService
 
     public function __construct(
         private UserRepository $repository,
-        // private PaginatorInterface $paginator,
+        private PaginatorInterface $paginator,
         private UserPasswordHasherInterface $hasher,
         private EntityManagerInterface $manager,
-        private Security $security
+        private Security $security,
+        private UrlGeneratorInterface $urlGenerator
     ) {
     }
+
+    
+    /**
+     * @param  mixed $request
+     * @return PaginationInterface
+     */
+    public function getUsers(Request $request): PaginationInterface {
+
+        $data = $this->repository->findAll();
+        $page = $request->query->getInt('page', 1);
+        $nbItems = $request->query->getInt('nbItems', 15);
+
+        return $this->paginator->paginate(
+            $data,
+            /* query NOT result */
+            $page,
+            /*page number*/
+            $nbItems, /*limit per page*/
+        );
+    }
+
+    /**
+     * index
+     *
+     * @param  mixed $request
+     * @return array
+     */
+    public function index(Request $request): array {
+        $breadcrumb = $this->breadcrumb();
+
+        $paginatedUsers = $this->getUsers($request);
+
+        return compact('paginatedUsers', 'breadcrumb');
+    }
+
+    /**
+     * index
+     *
+     * @param  mixed $request
+     * @return array
+     */
+    public function breadcrumb(array $items = []): Breadcrumb {
+        return new Breadcrumb([
+            new BreadcrumbItem('Liste des utilisateurs', $this->urlGenerator->generate('admin_user_index')),
+            ...$items
+        ]);
+    }
+
     /**
      * save
      *
