@@ -1,0 +1,87 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+  <div class="row">
+    <h1 class="h4 d-flex justify-content-between">
+      Liste des utilisateurs
+      <a href="{{ path('app_user_create') }}" title="Créer un utilisateur" class="btn btn-sm btn-success">
+        <i class="bi bi-plus-lg"></i>
+      </a>
+    </h1>
+    <div class="">
+      <table class="table table-responsive table-card mb-1 w-100">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nom d'utilisateur</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Rôles</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in paginatedUsers %}
+            <tr>
+              <th scope="row">{{ user.id }}</th>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ roles(user) }}</td>
+              <td>
+                <a 
+                  href="{{ path('app_user_edit', {
+                    id: user.id
+                  }) }}" 
+                  class="btn btn-info"
+                  title="Modifier le compte de {{ user.username }}"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a 
+                  href="{{ path('app_user_delete', {
+                    id: user.id
+                  }) }}" 
+                  class="btn btn-danger"
+                  title="Supprimer le compte de {{ user.username }}"
+                  onclick="deleteUser(event);"
+                >
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>                                
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between mt-4">
+      <div class="result-infos">
+        {# TODO: afficher le nombre de résultats pour voir la progression #}
+        <span class="fw-bold">{{ paginatedUsers.items|length }}</span>
+        résultats sur 
+        {{ paginatedUsers.getTotalItemCount }}
+      </div>
+      <div class="pagination-wrap hstack">
+        {{ knp_pagination_render(paginatedUsers) }}
+      </div>
+    </div>
+  </div>  
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+    const deleteUser = async (e) => {
+      e.preventDefault();
+      const url = e.target.href;
+      try {
+        const res = await axios.delete(url)
+        if (res.status === 204) {
+          e.target.closest('tr').remove();
+          new Toast('User deleted 🚀', 'success')
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+  </script>
+{% endblock %}
