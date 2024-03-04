@@ -1,10 +1,11 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/admin.html.twig" %}
 
-{% block body %}
+{% block content %}
   <div class="row">
     <h1 class="h4 d-flex justify-content-between">
       Liste des utilisateurs
-      <a href="{{ path('app_user_create') }}" title="Créer un utilisateur" class="btn btn-sm btn-success">
+      {# href="{{ path('app_user_create') }}" #}
+      <a href=# title="Créer un utilisateur" class="btn btn-sm btn-success">
         <i class="bi bi-plus-lg"></i>
       </a>
     </h1>
@@ -27,19 +28,21 @@
               <td>{{ user.email }}</td>
               <td>{{ roles(user) }}</td>
               <td>
-                <a 
-                  href="{{ path('app_user_edit', {
+                <a
+                  href=# 
+                  {# href="{{ path('app_user_edit', {
                     id: user.id
-                  }) }}" 
+                  }) }}"  #}
                   class="btn btn-info"
                   title="Modifier le compte de {{ user.username }}"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </a>
                 <a 
-                  href="{{ path('app_user_delete', {
+                  href=#
+                  {# href="{{ path('app_user_delete', {
                     id: user.id
-                  }) }}" 
+                  }) }}"  #}
                   class="btn btn-danger"
                   title="Supprimer le compte de {{ user.username }}"
                   onclick="deleteUser(event);"
