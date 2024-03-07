@@ -47,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire !')]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire !', allowNull: true)]
     #[Assert\Regex(
         pattern: '#^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]){8,}#',
         message: 'Le mot de passe doit contenir au moins une masjuscule, une minuscule et un chiffre avec au moins 8 caractères !',
@@ -114,8 +114,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }

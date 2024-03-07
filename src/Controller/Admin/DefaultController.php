@@ -13,6 +13,6 @@ final class DefaultController extends AbstractController
     #[Route('', name: 'default', methods: ['GET'])]
     public function default(): Response
     {
-        return $this->render('admin/default.html.twig');
+        return $this->render('admin/index.html.twig');
     }
 }
