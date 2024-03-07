@@ -64,4 +64,23 @@ final class UserController extends AbstractController
 
         return $this->render('admin/user/new.html.twig', compact('breadcrumb', 'user', 'form'));
     }
+
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    public function delete(User $user, Request $request): Response
+    {
+        $response = $this->service->remove($user);
+        
+        if ($response === false) {
+            return $this->json(
+                'BAD REQUEST',
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        
+        return $this->json(
+            $response->data,
+            $response->status,
+            $response->headers,
+        );
+    }
 }
