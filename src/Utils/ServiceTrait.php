@@ -15,7 +15,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  */
 trait ServiceTrait
 {
-
+    
     public function __construct(private Security $security) {}
 
     /**
