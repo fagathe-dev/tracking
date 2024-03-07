@@ -94,12 +94,27 @@ final class UserService
             $this->manager->flush();
             return true;
         } catch (ORMException $e) {
-            $this->addFlash('danger', $e->getMessage());
+            $this->addFlash($e->getMessage(), 'danger');
             return false;
         } catch (Exception $e) {
-            $this->addFlash('danger', $e->getMessage());
+            $this->addFlash($e->getMessage(), 'danger');
             return false;
         }
+    }
+
+    public function update(User $user):bool 
+    {
+        $user->setUpdatedAt($this->now());
+
+        $result = $this->save($user);
+
+        if ($result) {
+            $this->addFlash('Utilisateur mis à jour 🚀', 'success');
+        } else {
+            $this->addFlash('Une erreur est survenue lors de la mise à jour de ce compte !', 'danger');
+        }
+
+        return $result;
     }
 
     /**
@@ -129,9 +144,9 @@ final class UserService
         $result = $this->save($user);
 
         if ($result) {
-            $this->addFlash('success', 'Utilisateur crée 🚀');
+            $this->addFlash('Utilisateur crée 🚀', 'success');
         } else {
-            $this->addFlash('danger', 'Une erreur est survenue lors de l\'enregistrement de ce compte !');
+            $this->addFlash('Une erreur est survenue lors de l\'enregistrement de ce compte !', 'danger');
         }
 
         return $result;
@@ -150,10 +165,10 @@ final class UserService
             $this->manager->flush();
             return $this->sendNoContent();
         } catch (ORMException $e) {
-            $this->addFlash('danger', 'Une erreur est survenue lors de la suppression de votre compte !');
+            $this->addFlash('Une erreur est survenue lors de la suppression de votre compte !', 'danger');
             return false;
         } catch (Exception $e) {
-            $this->addFlash('danger', $e->getMessage());
+            $this->addFlash($e->getMessage(), 'danger');
             return false;
         }
     }

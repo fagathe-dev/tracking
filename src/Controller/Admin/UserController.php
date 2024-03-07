@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use App\Form\App\Form\Admin\CreateUserType;
+use App\Form\App\Form\Admin\UserType;
 use App\Service\Breadcrumb\BreadcrumbItem;
 use App\Service\Token\TokenGenerator;
 use App\Service\UserService;
@@ -21,13 +21,13 @@ final class UserController extends AbstractController
         private TokenGenerator $tokenGenerator
     ) {
     }
-    
+
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         return $this->render('admin/user/index.html.twig', $this->service->index($request));
     }
-    
+
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -35,7 +35,7 @@ final class UserController extends AbstractController
             new BreadcrumbItem('Nouveau'),
         ]);
         $user = new User;
-        $form = $this->createForm(CreateUserType::class, $user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -44,6 +44,22 @@ final class UserController extends AbstractController
             if ($this->service->create($user)) {
                 return $this->redirectToRoute('admin_user_index');
             }
+        }
+
+        return $this->render('admin/user/new.html.twig', compact('breadcrumb', 'user', 'form'));
+    }
+
+    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(User $user, Request $request): Response
+    {
+        $breadcrumb = $this->service->breadcrumb([
+            new BreadcrumbItem('Modifier #' . $user->getId()),
+        ]);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->service->update($user);
         }
 
         return $this->render('admin/user/new.html.twig', compact('breadcrumb', 'user', 'form'));
