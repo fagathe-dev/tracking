@@ -133,7 +133,7 @@ final class UserService
      * @param  mixed $user
      * @return User
      */
-    private function hash(User $user): User
+    public function hash(User $user): User
     {
         return $user->setPassword(
             $this->hasher->hashPassword($user, $user->getPassword())
@@ -173,7 +173,7 @@ final class UserService
 
         $user->setApiToken($token);
 
-        $result = $this->save($user);
+        $result = $this->update($user);
 
         if ($result) {
             return $this->sendJson(compact('token'));
