@@ -1,0 +1,91 @@
+{% extends "layouts/admin.html.twig" %}
+
+{% block content %}
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+    {% for navItem in nav %}
+      <li class="nav-item" role="presentation">
+        <button 
+          class="nav-link{{ navItem.isActive ? ' active' : '' }}" 
+          id="{{ navItem.id }}-tab" 
+          data-bs-toggle="tab" 
+          data-bs-target="#{{ navItem.id }}" 
+          type="button" 
+          role="tab" 
+          aria-controls="{{ navItem.id }}" 
+          aria-selected="{{ navItem.isActive ? 'true' : 'false' }}"
+        >{{ navItem.label }}</button>
+      </li>
+    {% endfor %}
+  
+  </ul>
+    
+  <!-- Tab panes -->
+  <div class="tab-content mt-1">
+    {% for navItem in nav %}
+      <div class="tab-pane{{ navItem.isActive ? ' active' : '' }}" id="{{ navItem.id }}" role="tabpanel" aria-labelledby="{{    navItem.id }}-tab">
+        {% include "admin/user/edit-tabs/" ~ navItem.template %}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block js %}
+  <script>
+
+    const setUrlParam = (key, value) => {
+      const url = new URL(window.location.href);
+      const searchParams = url.searchParams;
+      searchParams.set(key, value)
+      return  window.history.pushState({}, '', url);
+    }
+
+    (() => {
+      const forms = document.querySelectorAll('form');
+
+      forms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const parameter = e.target.closest('.tab-pane').id;
+          const url = new URL(window.location.href);
+          const searchParams = url.searchParams;
+          const formParameter = url.searchParams.get('form');
+          if (formParameter === null || formParameter !== parameter) {
+            setUrlParam('form', parameter)
+          }
+          e.target.submit();
+        })
+      })
+    })();
+
+    const handleChangeApiToken = async (e) => {
+      e.preventDefault();
+      const button = e.target.tagName === 'BUTTON' ? e.target : e.target.closest('button');
+      const url = button.dataset.href;
+      const parameter = button.closest('.tab-pane').id;
+      setUrlParam('form', parameter);
+      
+      try {
+        const res = await fetch(url, {
+          method: 'PUT',
+          headers: {
+            "Content-Type": 'application/json'
+          },
+        });
+        const { token } = await res.json();
+        
+        if (res.status === 200) {
+          if (token) {
+            button.closest('tr').querySelector(button.dataset.xtTarget).value = token
+          }
+          new Toast('User token updated 🚀', 'success');
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+  </script>
+{% endblock %}

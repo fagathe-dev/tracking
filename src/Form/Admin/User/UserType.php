@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\App\Form\Admin;
+namespace App\Form\Admin\User;
 
 use App\Entity\User;
 use App\Enum\User\RoleEnum;
