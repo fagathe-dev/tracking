@@ -1,0 +1,11 @@
+<table class="table table-borderless">
+  <tr>
+    <th scope=row>Jeton</th>
+    <td>{{ app.user.apiToken ?? 'Pas de jeton' }}</td>
+    <td>
+      <button type="button" data-href=# class="btn btn-sm btn-primary" onclick="handleChangeApiToken(event);">
+        <i class="bi bi-repeat"></i>
+      </button>
+    </td>
+  </tr>
+</table>
