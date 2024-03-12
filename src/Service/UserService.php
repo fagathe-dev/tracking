@@ -7,6 +7,7 @@ use App\Helpers\DateTimeHelperTrait;
 use App\Repository\UserRepository;
 use App\Service\Breadcrumb\Breadcrumb;
 use App\Service\Breadcrumb\BreadcrumbItem;
+use App\Service\Token\TokenGenerator;
 use App\Utils\ServiceTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
@@ -30,16 +31,18 @@ final class UserService
         private UserPasswordHasherInterface $hasher,
         private EntityManagerInterface $manager,
         private Security $security,
-        private UrlGeneratorInterface $urlGenerator
+        private UrlGeneratorInterface $urlGenerator,
+        private TokenGenerator $tokenGenerator,
     ) {
     }
 
-    
+
     /**
      * @param  mixed $request
      * @return PaginationInterface
      */
-    public function getUsers(Request $request): PaginationInterface {
+    public function getUsers(Request $request): PaginationInterface
+    {
 
         $data = $this->repository->findAll();
         $page = $request->query->getInt('page', 1);
@@ -60,7 +63,8 @@ final class UserService
      * @param  mixed $request
      * @return array
      */
-    public function index(Request $request): array {
+    public function index(Request $request): array
+    {
         $breadcrumb = $this->breadcrumb();
 
         $paginatedUsers = $this->getUsers($request);
@@ -74,7 +78,8 @@ final class UserService
      * @param  mixed $request
      * @return array
      */
-    public function breadcrumb(array $items = []): Breadcrumb {
+    public function breadcrumb(array $items = []): Breadcrumb
+    {
         return new Breadcrumb([
             new BreadcrumbItem('Liste des utilisateurs', $this->urlGenerator->generate('admin_user_index')),
             ...$items
@@ -102,7 +107,12 @@ final class UserService
         }
     }
 
-    public function update(User $user):bool 
+    /**
+     * @param User $user
+     * 
+     * @return bool
+     */
+    public function update(User $user): bool
     {
         $user->setUpdatedAt($this->now());
 
@@ -153,6 +163,26 @@ final class UserService
     }
 
     /**
+     * @param User $user
+     * 
+     * @return bool
+     */
+    public function updateApiToken(User $user): bool|object
+    {
+        $token = $this->tokenGenerator->generate(80);
+
+        $user->setApiToken($token);
+
+        $result = $this->save($user);
+
+        if ($result) {
+            return $this->sendJson(compact('token'));
+        }
+
+        return $result;
+    }
+
+    /**
      * remove
      *
      * @param  User $object
@@ -172,7 +202,7 @@ final class UserService
             return false;
         }
     }
-    
+
     /**
      * get logged User
      *

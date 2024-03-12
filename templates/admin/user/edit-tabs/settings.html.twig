@@ -1,9 +1,14 @@
 <table class="table table-borderless">
   <tr>
     <th scope=row>Jeton</th>
-    <td>{{ app.user.apiToken ?? 'Pas de jeton' }}</td>
+    <td data-token>{{ app.user.apiToken ?? 'Pas de jeton' }}</td>
     <td>
-      <button type="button" data-href=# class="btn btn-sm btn-primary" onclick="handleChangeApiToken(event);">
+      <button 
+        type="button" 
+        data-href={{ path('admin_user_updateApiToken', {id: user.id}) }} 
+        class="btn btn-sm btn-primary" 
+        onclick="handleChangeApiToken(event);"
+      >
         <i class="bi bi-repeat"></i>
       </button>
     </td>
