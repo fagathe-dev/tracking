@@ -69,6 +69,7 @@ final class UserController extends AbstractController
         $formPassword = $this->createForm(EditPasswordType::class);
         $formPassword->handleRequest($request);
         if ($formPassword->isSubmitted() && $formPassword->isValid()) {
+            $this->service->hash($user->setPassword($formPassword->get('password')->getData()));
             $this->service->update($user);
         }
 
@@ -96,7 +97,7 @@ final class UserController extends AbstractController
         }
 
         return $this->json($response->data, $response->status, $response->headers);
-    }    
+    }
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(User $user, Request $request): Response
