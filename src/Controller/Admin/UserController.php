@@ -9,6 +9,7 @@ use App\Service\Breadcrumb\BreadcrumbItem;
 use App\Service\Token\TokenGenerator;
 use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -81,6 +82,21 @@ final class UserController extends AbstractController
 
         return $this->render('admin/user/edit.html.twig', compact('breadcrumb', 'user', 'formInfos', 'formPassword', 'nav'));
     }
+
+    #[Route('/{id}/updateApiToken', name: 'updateApiToken', methods: ['PUT'], requirements: ['id' => '\d+'])]
+    public function updateApiToken(User $user): JsonResponse
+    {
+        $response = $this->service->updateApiToken($user);
+
+        if (is_bool($response)) {
+            return $this->json(
+                'BAD REQUEST',
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->json($response->data, $response->status, $response->headers);
+    }    
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(User $user, Request $request): Response

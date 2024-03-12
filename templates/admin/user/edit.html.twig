@@ -24,7 +24,7 @@
   <!-- Tab panes -->
   <div class="tab-content mt-1">
     {% for navItem in nav %}
-      <div class="tab-pane{{ navItem.isActive ? ' active' : '' }}" id="{{ navItem.id }}" role="tabpanel" aria-labelledby="{{ navItem.id }}-tab">
+      <div class="tab-pane{{ navItem.isActive ? ' active' : '' }}" id="{{ navItem.id }}" role="tabpanel" aria-labelledby="{{    navItem.id }}-tab">
         {% include "admin/user/edit-tabs/" ~ navItem.template %}
       </div>
     {% endfor %}
@@ -33,6 +33,14 @@
 
 {% block js %}
   <script>
+
+    const setUrlParam = (key, value) => {
+      const url = new URL(window.location.href);
+      const searchParams = url.searchParams;
+      searchParams.set(key, value)
+      return  window.history.pushState({}, '', url);
+    }
+
     (() => {
       const forms = document.querySelectorAll('form');
 
@@ -44,16 +52,40 @@
           const searchParams = url.searchParams;
           const formParameter = url.searchParams.get('form');
           if (formParameter === null || formParameter !== parameter) {
-            searchParams.set('form', parameter)
-            history.pushState({}, '', url);
+            setUrlParam('form', parameter)
           }
           e.target.submit();
         })
       })
     })();
 
-    const handleChangeApiToken = (e) => {
-      e.preventDefault()
+    const handleChangeApiToken = async (e) => {
+      e.preventDefault();
+      const button = e.target.tagName === 'BUTTON' ? e.target : e.target.closest('button');
+      const url = button.dataset.href;
+      const parameter = button.closest('.tab-pane').id;
+      setUrlParam('form', parameter);
+      
+      try {
+        const res = await fetch(url, {
+          method: 'PUT',
+          headers: {
+            "Content-Type": 'application/json'
+          },
+        });
+        const { token } = await res.json();
+        
+        if (res.status === 200) {
+          if (token) {
+            button.closest('tr').querySelector('[data-token]').innerHTML = token
+          }
+          new Toast('User token updated 🚀', 'success');
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
     }
   </script>
 {% endblock %}
