@@ -77,7 +77,7 @@
         
         if (res.status === 200) {
           if (token) {
-            button.closest('tr').querySelector('[data-token]').innerHTML = token
+            button.closest('tr').querySelector(button.dataset.xtTarget).value = token
           }
           new Toast('User token updated 🚀', 'success');
         }

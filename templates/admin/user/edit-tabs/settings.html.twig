@@ -1,16 +1,21 @@
 <table class="table table-borderless">
   <tr>
     <th scope=row>Jeton</th>
-    <td data-token>{{ app.user.apiToken ?? 'Pas de jeton' }}</td>
+    <td>
+      <input type="text" id=apiToken readonly class="form-control-plaintext" value="{{ app.user.apiToken ?? 'Pas de jeton' }}">
+    </td>
     <td>
       <button 
         type="button" 
         data-href={{ path('admin_user_updateApiToken', {id: user.id}) }} 
         class="btn btn-sm btn-primary" 
         onclick="handleChangeApiToken(event);"
+        title="Générer un nouveau jeton"
+        data-xt-target="#apiToken"
       >
         <i class="bi bi-repeat"></i>
       </button>
+      <button type="button" class="btn btn-sm btn-success" title="Copier le jeton" data-xt-action="clipboard" data-xt-target="#apiToken"><i class="bi bi-copy"></i></button>
     </td>
   </tr>
 </table>
