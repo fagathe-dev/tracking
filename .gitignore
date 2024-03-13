@@ -10,6 +10,7 @@
 /.env
 /.env.test
 /migrations/*
+/scripts/fixtures.sh
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
