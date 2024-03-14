@@ -38,23 +38,33 @@ final class UserService
 
 
     /**
-     * @param  mixed $request
-     * @return PaginationInterface
+     * @param  Request $request
+     * @return array
      */
-    public function getUsers(Request $request): PaginationInterface
+    public function getPagination(Request $request): array
     {
 
         $data = $this->repository->findAll();
         $page = $request->query->getInt('page', 1);
-        $nbItems = $request->query->getInt('nbItems', 15);
+        $nbItems = $request->query->getInt('nbItems', 10);
 
-        return $this->paginator->paginate(
+        $pagination = $this->paginator->paginate(
             $data,
             /* query NOT result */
             $page,
             /*page number*/
             $nbItems, /*limit per page*/
         );
+        
+        $maxPage = ceil($pagination->getTotalItemCount() / $pagination->getItemNumberPerPage());
+        
+        if ($page > $maxPage) {
+            $numberCurrentResults = $pagination->getTotalItemCount();
+        }  else {
+            $numberCurrentResults = ($pagination->getCurrentPageNumber() - 1) * $pagination->getItemNumberPerPage() + count($pagination->getItems());
+        }
+
+        return compact('pagination', 'numberCurrentResults');
     }
 
     /**
@@ -65,11 +75,10 @@ final class UserService
      */
     public function index(Request $request): array
     {
-        $breadcrumb = $this->breadcrumb();
-
-        $paginatedUsers = $this->getUsers($request);
-
-        return compact('paginatedUsers', 'breadcrumb');
+        return [
+            'breadcrumb' => $this->breadcrumb(),
+            ...$this->getPagination($request), 
+        ];
     }
 
     /**

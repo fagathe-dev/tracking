@@ -23,21 +23,22 @@
           </tr>
         </thead>
         <tbody>
-          {% for i in range(1, 10) %}
+          {% for site in pagination %}
             <tr>
-              <th scope="row">{{ i }}</th>
+              <th scope="row">{{ site.id }}</th>
               <td>
                 <input 
                   type=checkbox
-                  checked id="isActive{{ i }}" 
+                  {% if site.isActive %}checked{% endif %}
+                  id="isActive{{ site.id }}" 
                   class="form-check-input" 
-                  title="Activer le tracking du site blablabla"
+                  title="Activer le tracking du site {{ site.name }}"
                   data-href=#
                 >
               </td>
-              <td>Site {{ i }}</td>
-              <td>whatever-domain-{{i}}.com</td>
-              <td>{{ random(['DEV', 'PREPROD', 'PROD']) }}</td>
+              <td>{{ site.name }}</td>
+              <td>{{ site.domain }}</td>
+              <td>{{ site.env }}</td>
               <td>
                 <a
                   {# href={{ path('admin_user_edit', {
@@ -45,7 +46,7 @@
                   }) }} #}
                   href=#
                   class="btn btn-info"
-                  title="Modifier le site de blablabla"
+                  title="Modifier le site de {{ site.name }}"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </a>
@@ -55,7 +56,7 @@
                     id: user.id
                   }) }}" #}
                   class="btn btn-danger"
-                  title="Supprimer le site de blablabla"
+                  title="Supprimer le site de {{ site.name }}"
                   onclick="deleteUser(event);"
                 >
                   <i class="bi bi-trash"></i>
@@ -70,12 +71,12 @@
     <div class="d-flex justify-content-between mt-4">
       <div class="result-infos">
         {# TODO: afficher le nombre de résultats pour voir la progression #}
-        <span class="fw-bold">{# {{ paginatedUsers.items|length }} #}</span>
-        résultats sur 
-        {# {{ paginatedUsers.getTotalItemCount }} #}
+        <span class="fw-bold">{{ numberCurrentResults }}</span>
+        sur 
+        {{ pagination.getTotalItemCount }} résultats
       </div>
       <div class="pagination-wrap hstack">
-        {# {{ knp_pagination_render(paginatedUsers) }} #}
+        {{ knp_pagination_render(pagination) }}
       </div>
     </div>
 
