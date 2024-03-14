@@ -20,7 +20,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for user in paginatedUsers %}
+          {% for user in pagination %}
             <tr>
               <th scope="row">{{ user.id }}</th>
               <td>{{ user.username }}</td>
@@ -55,14 +55,13 @@
     <div class="d-flex justify-content-between mt-4">
       <div class="result-infos">
         {# TODO: afficher le nombre de résultats pour voir la progression #}
-        <span class="fw-bold">{{ paginatedUsers.items|length }}</span>
-        résultats sur 
-        {{ paginatedUsers.getTotalItemCount }}
+        <span class="fw-bold">{{ numberCurrentResults }}</span>
+        sur 
+        {{ pagination.getTotalItemCount }} résultats
       </div>
       <div class="pagination-wrap hstack">
-        {{ knp_pagination_render(paginatedUsers) }}
+        {{ knp_pagination_render(pagination) }}
       </div>
-    </div>
   </div>  
 {% endblock %}
 
