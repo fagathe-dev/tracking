@@ -1,0 +1,84 @@
+{% extends "layouts/admin.html.twig" %}
+
+{% block content %}
+  <div class="row mt-2">
+
+    <h1 class="h4 d-flex justify-content-between">
+      Liste des sites
+      <a href={{ path('admin_user_new') }} title="Créer un utilisateur" class="btn btn-sm btn-success">
+        <i class="bi bi-plus-lg"></i>
+      </a>
+    </h1>
+
+    <div class="">
+      <table class="table table-responsive table-striped mb-1">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Actif</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Domaine</th>
+            <th scope="col">Environnement</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in range(1, 10) %}
+            <tr>
+              <th scope="row">{{ i }}</th>
+              <td>
+                <input 
+                  type=checkbox
+                  checked id="isActive{{ i }}" 
+                  class="form-check-input" 
+                  title="Activer le tracking du site blablabla"
+                  data-href=#
+                >
+              </td>
+              <td>Site {{ i }}</td>
+              <td>whatever-domain-{{i}}.com</td>
+              <td>{{ random(['DEV', 'PREPROD', 'PROD']) }}</td>
+              <td>
+                <a
+                  {# href={{ path('admin_user_edit', {
+                    id: user.id
+                  }) }} #}
+                  href=#
+                  class="btn btn-info"
+                  title="Modifier le site de blablabla"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a 
+                  href=#
+                  {# href="{{ path('admin_user_delete', {
+                    id: user.id
+                  }) }}" #}
+                  class="btn btn-danger"
+                  title="Supprimer le site de blablabla"
+                  onclick="deleteUser(event);"
+                >
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+      <div class="result-infos">
+        {# TODO: afficher le nombre de résultats pour voir la progression #}
+        <span class="fw-bold">{# {{ paginatedUsers.items|length }} #}</span>
+        résultats sur 
+        {# {{ paginatedUsers.getTotalItemCount }} #}
+      </div>
+      <div class="pagination-wrap hstack">
+        {# {{ knp_pagination_render(paginatedUsers) }} #}
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}
