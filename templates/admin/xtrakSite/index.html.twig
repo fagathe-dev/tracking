@@ -5,7 +5,7 @@
 
     <h1 class="h4 d-flex justify-content-between">
       Liste des sites
-      <a href={{ path('admin_user_new') }} title="Créer un utilisateur" class="btn btn-sm btn-success">
+      <a href={{ path('admin_xtrakSite_new') }} title="Créer un site" class="btn btn-sm btn-success">
         <i class="bi bi-plus-lg"></i>
       </a>
     </h1>
@@ -41,10 +41,9 @@
               <td>{{ site.env }}</td>
               <td>
                 <a
-                  {# href={{ path('admin_user_edit', {
-                    id: user.id
-                  }) }} #}
-                  href=#
+                  href={{ path('admin_xtrakSite_edit', {
+                    id: site.id
+                  }) }}
                   class="btn btn-info"
                   title="Modifier le site de {{ site.name }}"
                 >
