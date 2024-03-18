@@ -48,10 +48,19 @@ final class XtrakSiteController extends AbstractController
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, XtrakSite $site): Response
     {
+        $breadcrumb = $this->service->breadcrumb([new BreadcrumbItem('Modifier site')]);
         $form = $this->createForm(SiteType::class, $site);
         $form->handleRequest($request);
 
-        return $this->render($this->getTemplate('edit'), compact('form'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->service->update($site)) {
+                return $this->redirectToRoute('admin_xtrakSite_edit', [
+                    'id' => $site->getId(),
+                ]);
+            }
+        }
+
+        return $this->render($this->getTemplate('edit'), compact('form', 'breadcrumb'));
     }
 
     /**
