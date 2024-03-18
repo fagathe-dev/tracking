@@ -31,6 +31,7 @@ class SiteType extends AbstractType
             ])
             ->add('isActive', CheckboxType::class, [
                 'label' => 'Activé',
+                'required' => false,
             ])
 
             ->add('save', SubmitType::class, [

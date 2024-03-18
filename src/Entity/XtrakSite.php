@@ -6,8 +6,15 @@ use App\Repository\XtrakSiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: XtrakSiteRepository::class)]
+#[UniqueEntity(
+    fields: ['domain'],
+    errorPath: 'domain',
+    message: 'Ce site existe déjà !'
+)]
 class XtrakSite
 {
     #[ORM\Id]
@@ -19,6 +26,7 @@ class XtrakSite
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Hostname(message: 'The server name must be a valid hostname.')]
     private ?string $domain = null;
 
     #[ORM\Column(length: 15)]

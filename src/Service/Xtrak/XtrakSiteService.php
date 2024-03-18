@@ -48,12 +48,12 @@ final class XtrakSiteService
             /*page number*/
             $nbItems, /*limit per page*/
         );
-        
+
         $maxPage = ceil($pagination->getTotalItemCount() / $pagination->getItemNumberPerPage());
-        
+
         if ($page > $maxPage) {
             $numberCurrentResults = $pagination->getTotalItemCount();
-        }  else {
+        } else {
             $numberCurrentResults = ($pagination->getCurrentPageNumber() - 1) * $pagination->getItemNumberPerPage() + count($pagination->getItems());
         }
 
@@ -71,6 +71,27 @@ final class XtrakSiteService
             'breadcrumb' => $this->breadcrumb(),
             ...$this->getPagination($request),
         ];
+    }
+
+    /**
+     * create
+     * @param XtrakSite $site
+     * 
+     * @return bool
+     */
+    public function create(XtrakSite $site): bool
+    {
+        $site->setCreatedAt($this->now());
+
+        $result = $this->save($site);
+
+        if ($result) {
+            $this->addFlash('Site crée 🚀', 'success');
+        } else {
+            $this->addFlash('Une erreur est survenue lors de l\'enregistrement de ce site !', 'danger');
+        }
+
+        return $result;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\XtrakSite;
 use App\Form\Admin\Xtrak\SiteType;
+use App\Service\Breadcrumb\BreadcrumbItem;
 use App\Service\Xtrak\XtrakSiteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,16 +29,27 @@ final class XtrakSiteController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $breadcrumb = $this->service->breadcrumb([new BreadcrumbItem('Nouveau site')]);
         $site = new XtrakSite;
         $form = $this->createForm(SiteType::class, $site);
+        $form->handleRequest($request);
 
-        return $this->render($this->getTemplate('new'), compact('form'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->service->create($site)) {
+                return $this->redirectToRoute('admin_xtrakSite_edit', [
+                    'id' => $site->getId(),
+                ]);
+            }
+        }
+
+        return $this->render($this->getTemplate('new'), compact('form', 'breadcrumb'));
     }
 
-    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, XtrakSite $site): Response
     {
         $form = $this->createForm(SiteType::class, $site);
+        $form->handleRequest($request);
 
         return $this->render($this->getTemplate('edit'), compact('form'));
     }
