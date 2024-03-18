@@ -26,7 +26,7 @@ class XtrakSite
     private ?string $name = null;
 
     #[ORM\Column(length: 100)]
-    #[Assert\Hostname(message: 'The server name must be a valid hostname.')]
+    #[Assert\Hostname(message: '{{ value }} n\'est pas un nom de domaine valide.')]
     private ?string $domain = null;
 
     #[ORM\Column(length: 15)]
