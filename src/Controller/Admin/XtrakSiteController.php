@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\XtrakSite;
+use App\Form\Admin\Xtrak\SiteType;
 use App\Service\Xtrak\XtrakSiteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +23,23 @@ final class XtrakSiteController extends AbstractController
     public function index(Request $request): Response
     {
         return $this->render($this->getTemplate('index'), $this->service->index($request));
+    }
+
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request): Response
+    {
+        $site = new XtrakSite;
+        $form = $this->createForm(SiteType::class, $site);
+
+        return $this->render($this->getTemplate('new'), compact('form'));
+    }
+
+    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, XtrakSite $site): Response
+    {
+        $form = $this->createForm(SiteType::class, $site);
+
+        return $this->render($this->getTemplate('edit'), compact('form'));
     }
 
     /**
