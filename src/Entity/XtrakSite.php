@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: XtrakSiteRepository::class)]
@@ -23,25 +24,31 @@ class XtrakSite
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['xtrakSite_read'])]
     private ?string $name = null;
-
+    
     #[ORM\Column(length: 100)]
     #[Assert\Hostname(message: '{{ value }} n\'est pas un nom de domaine valide.')]
+    #[Groups(['xtrakSite_read'])]
     private ?string $domain = null;
-
+    
     #[ORM\Column(length: 15)]
+    #[Groups(['xtrakSite_read'])]
     private ?string $env = null;
-
+    
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: XtrakCode::class)]
     private Collection $xtrakCodes;
-
+    
     #[ORM\Column]
+    #[Groups(['xtrakSite_read'])]
     private ?bool $isActive = null;
-
+    
     #[ORM\Column]
+    #[Groups(['xtrakSite_read'])]
     private ?\DateTimeImmutable $createdAt = null;
-
+    
     #[ORM\Column(nullable: true)]
+    #[Groups(['xtrakSite_read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()

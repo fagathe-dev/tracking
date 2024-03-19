@@ -7,6 +7,7 @@ use App\Form\Admin\Xtrak\SiteType;
 use App\Service\Breadcrumb\BreadcrumbItem;
 use App\Service\Xtrak\XtrakSiteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,6 +62,22 @@ final class XtrakSiteController extends AbstractController
         }
 
         return $this->render($this->getTemplate('edit'), compact('form', 'breadcrumb'));
+    }
+
+    #[Route('/{id}', name: 'toggle', methods: ['PUT'], requirements: ['id' => '\d+'])]
+    public function toggle(XtrakSite $site): JsonResponse
+    {
+        $site->setIsActive(!$site->isIsActive());
+        $result = $this->service->update($site);
+
+        if ($result === false) {
+            return $this->json(
+                'BAD REQUEST',
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->json($site, Response::HTTP_OK, context: ['groups' => ['xtrakSite_read']]);
     }
 
     /**
