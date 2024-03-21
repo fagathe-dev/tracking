@@ -6,8 +6,15 @@ use App\Repository\XtrakCodeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: XtrakCodeRepository::class)]
+#[UniqueEntity(
+    fields: ['domain'],
+    errorPath: 'domain',
+    message: 'Ce site existe déjà !'
+)]
 class XtrakCode
 {
     #[ORM\Id]
@@ -19,15 +26,11 @@ class XtrakCode
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $category = null;
-
-    #[ORM\ManyToOne(inversedBy: 'xtrakCodes')]
-    private ?XtrakSite $site = null;
+    private ?string $action = null;
 
     #[ORM\Column(length: 60, nullable: true)]
     private ?string $page = null;
 
-    #[ORM\Column]
     private ?int $nbRequest = null;
 
     #[ORM\Column]
@@ -38,6 +41,19 @@ class XtrakCode
 
     #[ORM\OneToMany(mappedBy: 'code', targetEntity: XtrakEvent::class)]
     private Collection $xtrakEvents;
+
+    #[ORM\Column(length: 10)]
+    private ?string $env = null;
+
+    #[ORM\ManyToOne(inversedBy: 'xtrakCodes')]
+    private ?XtrakSite $site = null;
+
+    #[ORM\Column]
+    private ?bool $isActive = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Hostname(message: '{{ value }} n\'est pas un nom de domaine valide.')]
+    private ?string $domain = null;
 
     public function __construct()
     {
@@ -61,26 +77,14 @@ class XtrakCode
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getAction(): ?string
     {
-        return $this->category;
+        return $this->action;
     }
 
-    public function setCategory(string $category): static
+    public function setAction(string $action): static
     {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    public function getSite(): ?XtrakSite
-    {
-        return $this->site;
-    }
-
-    public function setSite(?XtrakSite $site): static
-    {
-        $this->site = $site;
+        $this->action = $action;
 
         return $this;
     }
@@ -159,6 +163,54 @@ class XtrakCode
                 $xtrakEvent->setCode(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEnv(): ?string
+    {
+        return $this->env;
+    }
+
+    public function setEnv(string $env): static
+    {
+        $this->env = $env;
+
+        return $this;
+    }
+
+    public function getSite(): ?XtrakSite
+    {
+        return $this->site;
+    }
+
+    public function setSite(?XtrakSite $site): static
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getDomain(): ?string
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(?string $domain): static
+    {
+        $this->domain = $domain;
 
         return $this;
     }
