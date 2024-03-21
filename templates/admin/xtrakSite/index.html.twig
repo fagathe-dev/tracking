@@ -33,7 +33,10 @@
                   id="isActive{{ site.id }}" 
                   class="form-check-input" 
                   title="Activer le tracking du site {{ site.name }}"
-                  data-href=#
+                  data-href="{{ path('admin_xtrakSite_toggle', {
+                    id: site.id
+                  }) }}"
+                  onchange="toggle(event);"
                 >
               </td>
               <td>{{ site.name }}</td>
@@ -81,4 +84,30 @@
 
   </div>
 
+{% endblock %}
+
+{% block js %}
+  <script>
+    const toggle = async (e) => {
+      e.preventDefault();
+      const url = e.target.dataset.href;
+      const method = 'PUT';
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": 'application/json'
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          new Toast(`Site ${data.isActive ? 'activé' : 'désactivé' } 🚀`, 'success');
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+  </script>
 {% endblock %}
