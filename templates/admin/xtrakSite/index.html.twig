@@ -53,13 +53,12 @@
                   <i class="bi bi-pencil-square"></i>
                 </a>
                 <a 
-                  href=#
-                  {# href="{{ path('admin_user_delete', {
-                    id: user.id
-                  }) }}" #}
+                  href="{{ path('admin_xtrakSite_delete', {
+                    id: site.id
+                  }) }}"
                   class="btn btn-danger"
                   title="Supprimer le site de {{ site.name }}"
-                  onclick="deleteUser(event);"
+                  onclick="deleteSite(event);"
                 >
                   <i class="bi bi-trash"></i>
                 </a>
@@ -102,6 +101,28 @@
         const data = await res.json();
         if (res.ok) {
           new Toast(`Site ${data.isActive ? 'activé' : 'désactivé' } 🚀`, 'success');
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+    const deleteSite = async (e) => {
+      e.preventDefault();
+      const url = e.target.tagName === 'I' ? e.target.closest('a').href : e.target.href;
+      const method = e.target.dataset.method ?? 'DELETE';
+      
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": 'application/json'
+          },
+        });
+        if (res.status === 204) {
+          e.target.closest('tr').remove();
+          new Toast('Site supprimé 🚀', 'success')
         }
       } catch (e) {
         console.error(e.message);

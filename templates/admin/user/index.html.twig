@@ -69,7 +69,7 @@
   <script>
     const deleteUser = async (e) => {
       e.preventDefault();
-      const url = e.target.href;
+      const url =  e.target.tagName === 'I' ? e.target.closest('a').href : e.target.href;
       const method = e.target.dataset.method ?? 'DELETE';
       try {
         const res = await fetch(url, {
