@@ -149,4 +149,25 @@ final class XtrakSiteService
             return false;
         }
     }
+    
+    /**
+     * remove
+     *
+     * @param  XtrakSite $site
+     * @return object|bool
+     */
+    public function remove(XtrakSite $site): bool|object
+    {
+        try {
+            $this->manager->remove($site);
+            $this->manager->flush();
+            return $this->sendNoContent();
+        } catch (ORMException $e) {
+            $this->addFlash('Une erreur est survenue lors de la suppression de ce site !', 'danger');
+            return false;
+        } catch (Exception $e) {
+            $this->addFlash($e->getMessage(), 'danger');
+            return false;
+        }
+    }
 }

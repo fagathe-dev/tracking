@@ -80,6 +80,25 @@ final class XtrakSiteController extends AbstractController
         return $this->json($site, Response::HTTP_OK, context: ['groups' => ['xtrakSite_read']]);
     }
 
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    public function delete(XtrakSite $site, Request $request): Response
+    {
+        $response = $this->service->remove($site);
+
+        if ($response === false) {
+            return $this->json(
+                'BAD REQUEST',
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->json(
+            $response->data,
+            $response->status,
+            $response->headers,
+        );
+    }
+
     /**
      * @param string $path
      * 

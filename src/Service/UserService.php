@@ -204,7 +204,7 @@ final class UserService
             $this->manager->flush();
             return $this->sendNoContent();
         } catch (ORMException $e) {
-            $this->addFlash('Une erreur est survenue lors de la suppression de votre compte !', 'danger');
+            $this->addFlash('Une erreur est survenue lors de la suppression de cet utilisateur !', 'danger');
             return false;
         } catch (Exception $e) {
             $this->addFlash($e->getMessage(), 'danger');
