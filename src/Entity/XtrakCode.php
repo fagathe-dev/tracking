@@ -25,12 +25,6 @@ class XtrakCode
     #[ORM\Column(length: 50)]
     private ?string $code = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $action = null;
-
-    #[ORM\Column(length: 60, nullable: true)]
-    private ?string $page = null;
-
     private ?int $nbRequest = null;
 
     #[ORM\Column]
@@ -73,30 +67,6 @@ class XtrakCode
     public function setCode(string $code): static
     {
         $this->code = $code;
-
-        return $this;
-    }
-
-    public function getAction(): ?string
-    {
-        return $this->action;
-    }
-
-    public function setAction(string $action): static
-    {
-        $this->action = $action;
-
-        return $this;
-    }
-
-    public function getPage(): ?string
-    {
-        return $this->page;
-    }
-
-    public function setPage(?string $page): static
-    {
-        $this->page = $page;
 
         return $this;
     }

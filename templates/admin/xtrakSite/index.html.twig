@@ -17,8 +17,6 @@
             <th scope="col">ID</th>
             <th scope="col">Actif</th>
             <th scope="col">Nom</th>
-            <th scope="col">Domaine</th>
-            <th scope="col">Environnement</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -40,8 +38,6 @@
                 >
               </td>
               <td>{{ site.name }}</td>
-              <td>{{ site.domain }}</td>
-              <td>{{ site.env }}</td>
               <td>
                 <a
                   href={{ path('admin_xtrakSite_edit', {
