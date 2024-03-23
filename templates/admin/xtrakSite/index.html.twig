@@ -1,0 +1,130 @@
+{% extends "layouts/admin.html.twig" %}
+
+{% block content %}
+  <div class="row mt-2">
+
+    <h1 class="h4 d-flex justify-content-between">
+      Liste des sites
+      <a href={{ path('admin_xtrakSite_new') }} title="Créer un site" class="btn btn-sm btn-success">
+        <i class="bi bi-plus-lg"></i>
+      </a>
+    </h1>
+
+    <div class="">
+      <table class="table table-responsive table-striped mb-1">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Actif</th>
+            <th scope="col">Nom</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for site in pagination %}
+            <tr>
+              <th scope="row">{{ site.id }}</th>
+              <td>
+                <input 
+                  type=checkbox
+                  {% if site.isActive %}checked{% endif %}
+                  id="isActive{{ site.id }}" 
+                  class="form-check-input" 
+                  title="Activer le tracking du site {{ site.name }}"
+                  data-href="{{ path('admin_xtrakSite_toggle', {
+                    id: site.id
+                  }) }}"
+                  onchange="toggle(event);"
+                >
+              </td>
+              <td>{{ site.name }}</td>
+              <td>
+                <a
+                  href={{ path('admin_xtrakSite_edit', {
+                    id: site.id
+                  }) }}
+                  class="btn btn-info"
+                  title="Modifier le site de {{ site.name }}"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a 
+                  href="{{ path('admin_xtrakSite_delete', {
+                    id: site.id
+                  }) }}"
+                  class="btn btn-danger"
+                  title="Supprimer le site de {{ site.name }}"
+                  onclick="deleteSite(event);"
+                >
+                  <i class="bi bi-trash"></i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+      <div class="result-infos">
+        {# TODO: afficher le nombre de résultats pour voir la progression #}
+        <span class="fw-bold">{{ numberCurrentResults }}</span>
+        sur 
+        {{ pagination.getTotalItemCount }} résultats
+      </div>
+      <div class="pagination-wrap hstack">
+        {{ knp_pagination_render(pagination) }}
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block js %}
+  <script>
+    const toggle = async (e) => {
+      e.preventDefault();
+      const url = e.target.dataset.href;
+      const method = 'PUT';
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": 'application/json'
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          new Toast(`Site ${data.isActive ? 'activé' : 'désactivé' } 🚀`, 'success');
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+    const deleteSite = async (e) => {
+      e.preventDefault();
+      const url = e.target.tagName === 'I' ? e.target.closest('a').href : e.target.href;
+      const method = e.target.dataset.method ?? 'DELETE';
+      
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": 'application/json'
+          },
+        });
+        if (res.status === 204) {
+          e.target.closest('tr').remove();
+          new Toast('Site supprimé 🚀', 'success')
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+  </script>
+{% endblock %}

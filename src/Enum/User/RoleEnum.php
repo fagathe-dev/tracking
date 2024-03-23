@@ -9,6 +9,7 @@ final class RoleEnum implements EnumInterface
 
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_API = 'ROLE_API';
 
     /**
      * @return array
@@ -18,6 +19,7 @@ final class RoleEnum implements EnumInterface
         return [
             self::ROLE_ADMIN,
             self::ROLE_USER,
+            self::ROLE_API,
         ];
     }
 
@@ -29,6 +31,7 @@ final class RoleEnum implements EnumInterface
     {
         return match ($value) {
             self::ROLE_ADMIN => 'Administrateur',
+            self::ROLE_API => 'Utilisateur Api',
             default => 'Utilisateur',
         };
     }
@@ -51,6 +54,7 @@ final class RoleEnum implements EnumInterface
         return [
             'Administrateur' => self::ROLE_ADMIN,
             'Utilisateur' => self::ROLE_USER,
+            'Utilisateur Api' => self::ROLE_API,
         ];
     }
 

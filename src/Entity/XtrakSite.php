@@ -6,6 +6,7 @@ use App\Repository\XtrakSiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: XtrakSiteRepository::class)]
 class XtrakSite
@@ -16,13 +17,20 @@ class XtrakSite
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['xtrakSite_read'])]
     private ?string $name = null;
-
-    #[ORM\Column(length: 100)]
-    private ?string $domain = null;
-
-    #[ORM\Column(length: 15)]
-    private ?string $env = null;
+    
+    #[ORM\Column]
+    #[Groups(['xtrakSite_read'])]
+    private ?bool $isActive = null;
+    
+    #[ORM\Column]
+    #[Groups(['xtrakSite_read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+    
+    #[ORM\Column(nullable: true)]
+    #[Groups(['xtrakSite_read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: XtrakCode::class)]
     private Collection $xtrakCodes;
@@ -49,26 +57,38 @@ class XtrakSite
         return $this;
     }
 
-    public function getDomain(): ?string
+    public function isActive(): ?bool
     {
-        return $this->domain;
+        return $this->isActive;
     }
 
-    public function setDomain(string $domain): static
+    public function setIsActive(bool $isActive): static
     {
-        $this->domain = $domain;
+        $this->isActive = $isActive;
 
         return $this;
     }
 
-    public function getEnv(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->env;
+        return $this->createdAt;
     }
 
-    public function setEnv(string $env): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->env = $env;
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
