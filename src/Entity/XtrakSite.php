@@ -19,20 +19,20 @@ class XtrakSite
     #[ORM\Column(length: 100)]
     #[Groups(['xtrakSite_read'])]
     private ?string $name = null;
-    
+
     #[ORM\Column]
     #[Groups(['xtrakSite_read'])]
     private ?bool $isActive = null;
-    
+
     #[ORM\Column]
     #[Groups(['xtrakSite_read'])]
     private ?\DateTimeImmutable $createdAt = null;
-    
+
     #[ORM\Column(nullable: true)]
     #[Groups(['xtrakSite_read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'site', targetEntity: XtrakCode::class)]
+    #[ORM\OneToMany(mappedBy: 'site', targetEntity: XtrakCode::class, orphanRemoval: true, cascade: ['persist', 'remove', 'detach'])]
     private Collection $xtrakCodes;
 
     public function __construct()
