@@ -20,20 +20,10 @@ class SiteType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('domain', TextType::class, [
-                'label' => 'Nom de domaine',
-            ])
-            ->add('env', ChoiceType::class, [
-                'label' => 'Environnement',
-                'choices' => EnvEnum::choices(),
-                'expanded' => false,
-                'multiple' => false,
-            ])
             ->add('isActive', CheckboxType::class, [
                 'label' => 'Activé',
                 'required' => false,
             ])
-
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
                 'attr' => [

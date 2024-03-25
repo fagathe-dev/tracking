@@ -5,9 +5,9 @@
 
     <h1 class="h4 d-flex justify-content-between">
       Liste des sites
-      <a href={{ path('admin_xtrakSite_new') }} title="Créer un site" class="btn btn-sm btn-success">
+      <button type="button" title="Créer un site" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#newXtrakSiteModal">
         <i class="bi bi-plus-lg"></i>
-      </a>
+      </button>
     </h1>
 
     <div class="">
@@ -78,11 +78,44 @@
     </div>
 
   </div>
+  {% include "admin/components/_modal_xtrakSite.html.twig" %}
 
 {% endblock %}
 
 {% block js %}
   <script>
+    const handleCreateSubmit = async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const url = form.action;
+      const method = e.target.getAttribute('method') ?? 'POST';
+      const data = getData(form);
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify(data),
+        });
+        
+        const resData = await res.json();
+
+        if (res.ok) {
+          if (res.headers.has('Location')) {
+            setTimeout(() => window.location = res.headers.get('Location'), 3000)
+          }
+          form.reset();
+          new Toast('Site crée 🚀', 'success');
+        }
+      } catch (e) {
+        console.error(e.message);
+        new Toast(e.message, 'danger');
+      }
+      return;
+    }
+
     const toggle = async (e) => {
       e.preventDefault();
       const url = e.target.dataset.href;
