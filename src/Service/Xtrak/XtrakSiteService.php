@@ -13,7 +13,10 @@ use Doctrine\ORM\Exception\ORMException;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class XtrakSiteService
 {
@@ -26,6 +29,8 @@ final class XtrakSiteService
         private PaginatorInterface $paginator,
         private EntityManagerInterface $manager,
         private UrlGeneratorInterface $urlGenerator,
+        private SerializerInterface $serializer,
+        private ValidatorInterface $validator,
     ) {
     }
 
@@ -77,21 +82,33 @@ final class XtrakSiteService
      * create
      * @param XtrakSite $site
      * 
-     * @return bool
+     * @return object
      */
-    public function create(XtrakSite $site): bool
+    public function create(Request $request): object
     {
+        $data = $request->getContent();
+        $site = $this->serializer->deserialize($data, XtrakSite::class, 'json');
+
+        $errors = $this->validator->validate($site);
+
+        if (count($errors) > 0) {
+            return $this->sendViolations($errors);
+        }
+
         $site->setCreatedAt($this->now());
+        $site->setIsActive(false);
 
         $result = $this->save($site);
 
         if ($result) {
-            $this->addFlash('Site crée 🚀', 'success');
+            return $this->sendJson(
+                $site,
+                Response::HTTP_CREATED,
+                ['Location' => $this->urlGenerator->generate('admin_xtrakSite_edit', ['id' => $site->getId()])]
+            );
         } else {
-            $this->addFlash('Une erreur est survenue lors de l\'enregistrement de ce site !', 'danger');
+            return $this->sendCustomViolations(['form' => 'Une erreur est survenue lors de la création du site ' . $site->getName() . '.']);
         }
-
-        return $result;
     }
 
     /**
@@ -149,7 +166,7 @@ final class XtrakSiteService
             return false;
         }
     }
-    
+
     /**
      * remove
      *

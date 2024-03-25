@@ -27,23 +27,16 @@ final class XtrakSiteController extends AbstractController
         return $this->render($this->getTemplate('index'), $this->service->index($request));
     }
 
-    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['POST'])]
     public function new(Request $request): Response
     {
-        $breadcrumb = $this->service->breadcrumb([new BreadcrumbItem('Nouveau site')]);
-        $site = new XtrakSite;
-        $form = $this->createForm(SiteType::class, $site);
-        $form->handleRequest($request);
+        $response = $this->service->create($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->service->create($site)) {
-                return $this->redirectToRoute('admin_xtrakSite_edit', [
-                    'id' => $site->getId(),
-                ]);
-            }
-        }
-
-        return $this->render($this->getTemplate('new'), compact('form', 'breadcrumb'));
+        return $this->json(
+            $response->data,
+            $response->status,
+            $response->headers,
+        );
     }
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
@@ -67,7 +60,7 @@ final class XtrakSiteController extends AbstractController
     #[Route('/{id}', name: 'toggle', methods: ['PUT'], requirements: ['id' => '\d+'])]
     public function toggle(XtrakSite $site): JsonResponse
     {
-        $site->setIsActive(!$site->isIsActive());
+        $site->setIsActive(!$site->isActive());
         $result = $this->service->update($site);
 
         if ($result === false) {
